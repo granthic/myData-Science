@@ -30,6 +30,16 @@ dataset = pandas.read_csv(url, names=names)
 
 #print(dataset)
 print(dataset.head())
+
+
+print(dataset.describe())
+#print(df)
+dataset.drop_duplicates(subset=None, keep='first', inplace=False)
+#print(df)
+print(dataset.describe()) # Mean avg and other functions 
+
+
+
 #dataset.plot()
 #plt.show()
 #dataset.plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False)

@@ -9,7 +9,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib
-
+import sys
+sns.set()
 url = "./thefile.csv"
 #url = "./data.csv"
 #names = ['Year','Name', 'Price', 'Mileage', 'Body Type', 'Description']
@@ -17,7 +18,14 @@ names = ['Year','Brand', 'Model', 'Mileage','Engine','Color','Type','Description
 
 df = pd.read_csv(url, names=names)
 
-df.describe()
+print(str(sys.argv[2]))
+
+estYear = int(sys.argv[1])
+estMTO = int(sys.argv[2])
+estMileage = int(sys.argv[3])
+#df.describe()
+
+
 
 #for name in names:
 #print ([name]," : ",df[name].unique())
@@ -41,15 +49,15 @@ df['Mileage'] = pd.to_numeric(df['Mileage'], errors='coerce')
 df['Price'] = pd.to_numeric(df['Price'], errors='coerce')
 
 df['Price'].fillna(value=df['Price'].mean(), inplace=True)
-
+#print(df.count())
 df['Mileage_Log_Log'] = np.log(np.log(df['Mileage']))
-print(df.describe())
+#print(df.describe())
 #print(df)
 df.drop_duplicates(subset=None, keep='first', inplace=False)
 #print(df)
 #print(df.describe()) # Mean avg and other functions 
 #print(df['Mileage','Price','Type:   AWD'])
-print(df.head())
+#print(df.head())
 
 #sns.pairplot(df[['Year','Mileage_Log_Log','MOT']], height=2.0)
 #plt.show()
@@ -64,7 +72,7 @@ f, ax = plt.subplots(figsize=(8, 6))
 sns.heatmap(matrix, vmax=0.7,cmap='coolwarm',annot=True, square=True)
 plt.title('Car Price Variables')
 
-plt.show()
+#plt.show()
 
 
 #X = df[['Year', 'Brand', 'Mileage']]
@@ -78,18 +86,19 @@ y = df['Price'].values.reshape(-1, 1)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
 X_normalizer = StandardScaler()
 X_train = X_normalizer.fit_transform(X_train)
+
 X_test = X_normalizer.transform(X_test)
 
 y_normalizer = StandardScaler()
 y_train = y_normalizer.fit_transform(y_train)
 y_test = y_normalizer.transform(y_test)
 
-#model = MLPRegressor(hidden_layer_sizes=(100, 100), random_state=42)
-model = MLPRegressor(hidden_layer_sizes=(100, 100 ), activation='relu', solver='adam', alpha=0.0001, batch_size='auto', learning_rate='constant', learning_rate_init=0.001, power_t=0.5, max_iter=200, shuffle=True, random_state=None, tol=0.0001, verbose=False, warm_start=False, momentum=0.9, nesterovs_momentum=True, early_stopping=False, validation_fraction=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-08, n_iter_no_change=10)
+model = MLPRegressor(hidden_layer_sizes=(100, 100), random_state=42)
+#model = MLPRegressor(hidden_layer_sizes=(100, 100 ), activation='relu', solver='adam', alpha=0.0001, batch_size='auto', learning_rate='constant', learning_rate_init=0.001, power_t=0.5, max_iter=200, shuffle=True, random_state=None, tol=0.0001, verbose=False, warm_start=False, momentum=0.9, nesterovs_momentum=True, early_stopping=False, validation_fraction=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-08, n_iter_no_change=10)
 model.fit(X_train, y_train)
 
 
-print("##Now we can predict prices:")
+#print("##Now we can predict prices:")
 ##Now we can predict prices:
 y_pred = model.predict(X_test)
 
@@ -102,10 +111,10 @@ plt.xlabel('Prediction #')
 plt.ylabel('Real value %')
 
 
-print("## Now add the perfect prediction line")
+#print("## Now add the perfect prediction line")
 # Now add the perfect prediction line
-diagonal = np.linspace(15000,20000, 10000)
-#diagonal = np.linspace(500, 1500, 100)
+#diagonal = np.linspace(15000,20000, 10000)
+diagonal = np.linspace(500, 1500, 100)
 
 plt.plot(diagonal, diagonal, '-r')
 plt.xlabel('Predicted ask price ($)')
@@ -114,18 +123,18 @@ plt.show()
 
 
 ##Distance traveled (odometer) versus ask price
-distances = np.linspace(150000, 250000, 10000)
+distances = np.linspace(50000, 25000, 10000)
 
 df = pd.DataFrame([
 {
     'Year': 2017,
     'Mileage': mileage,
-    'MOT': 1
+    'MOT': 2
 }
 for mileage in distances])
 
 df['Mileage_Log_Log'] = np.log(np.log(df['Mileage']))
-X_custom = df[['Year', 'Mileage_Log_Log', 'MOT']]
+X_custom = df[['Year', 'MOT','Mileage_Log_Log' ]]
 X_custom = X_normalizer.transform(X_custom)
 
 y_pred = model.predict(X_custom)
@@ -142,25 +151,26 @@ plt.show()
 
 
 ##Predicted ask price versus Construction year
-construction_years = list(range(2013,2018 + 1))
-df = df
+#construction_years = list(range(2016,2018 + 1))
+construction_years = np.linspace(2012, 2019,num=10)
+
 df = pd.DataFrame([
 {
     'Year': construction_year,
-    'Mileage': 35000,
-    'MOT': 1
+    'Mileage': 45000,
+    'MOT': 2
 }
 for construction_year in construction_years])
 
 df['Mileage_Log_Log'] = np.log(np.log(df['Mileage']))
 
-print(df)
+#print(df)
 #X_custom = df[['Year', 'Price', 'Mileage_Log_Log']]
 X_custom = df[['Year', 'MOT', 'Mileage_Log_Log']]
-print(X_custom)
+#print(X_custom)
 X_custom = X_normalizer.transform(X_custom)
 #X_custom = X_normalizer.fit_transform(X_custom)
-print(X_custom)
+#print(X_custom)
 y_pred = model.predict(X_custom)
 price_prediction = y_normalizer.inverse_transform(y_pred)
 
@@ -170,7 +180,7 @@ plt.xticks(construction_years, construction_years)
 ax.set_xlabel('Construction year')
 ax.set_ylabel('Predicted ask price (€)')
 plt.title('Predicted ask price versus Construction year')
-plt.show()
+#plt.show()
 
 ## Periodical check-up (MOT) versus ask price
 days_until_MOT = np.linspace(-365, 365, 100)
@@ -196,15 +206,16 @@ ax.set_xlabel('MOT')
 ax.set_ylabel('Predicted ask price (€$)')
 ax.set_xlim(0, 365)
 plt.title('Predicted ask price versus Days until MOT')
-
+#plt.show()
 
 
 ## What is the value of my Peugeot?
+
 df = pd.DataFrame([
     {
-        'Year': 2018,
-        'MOT':1,
-        'Mileage': 44000,
+        'Year': estYear,
+        'MOT':estMTO,
+        'Mileage': estMileage,
     }
 ])
 
@@ -214,5 +225,7 @@ X_custom = X_normalizer.transform(X_custom)
 
 y_pred = model.predict(X_custom)
 price_prediction = y_normalizer.inverse_transform(y_pred)
+
+print("Estimate for Year : {} ,MOT:  {}, Mileage {} ".format(estYear,estMTO,estMileage))
 print('Predicted ask price: $%.2f' % price_prediction)
 
