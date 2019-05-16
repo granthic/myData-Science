@@ -3,4 +3,8 @@ test project for Find the price.
 
  
 run </br> 
-python dbEstimate.py
+python dbEstimat.py 2018 2 50000
+
+python dbEstimat.py estYear estMTO estMileage
+
+estMTO = 1-5 value based on features see CSV file 
