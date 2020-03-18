@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <title>Flask : Ask aBOuT ECM</title>
+  </head>
+  <body>
+    <h1>Flask Helper Example</h1>
+    <!--<h3>A web implementation of <a href="https://github.com/gunthercox/ChatterBot">ChatterBot</a> using Flask.</h3> -->
+    <h3>A web implementation of Ask Me ECM<a href="https://github.com/gunthercox/ChatterBot"> BOT</a> using Flask.</h3>
+    <div>
+      Start Count: <div id="star_count">0</div>
+      <div id="chatbox">
+        <p class="botText"><span> I'm Groot.</span></p>
+      </div>
+      <div id="userInput">
+        <img src=".\static\images\star.png" title="Star" id="img_star" width="32px" height="32px"></image>
+        <input id="textInput" type="text" name="msg" placeholder="Message">
+
+        <input id="buttonInput" type="submit" value="Send">
+      </div>
+      <script>
+        var userquery=""
+        function getBotResponse() {
+          var rawText = $("#textInput").val();
+          userquery = rawText;
+          var userHtml = '<p class="userText"><span>' + rawText + '</span></p>';
+          $("#textInput").val("");
+          $("#chatbox").append(userHtml);
+          document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+          $.get("/get", { msg: rawText }).done(function(data) {
+            var botHtml = '<p class="botText"><span>' + data + '</span></p>';
+            $("#chatbox").append(botHtml);
+            document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+          });
+        }
+        $("#textInput").keypress(function(e) {
+            if(e.which == 13) {
+                getBotResponse();  //// That is function in App.py which will send response... 
+            }
+        });
+        $("#buttonInput").click(function() {
+          getBotResponse();
+        });
+
+        $("#img_star").click(function(){
+          //
+          insertResponse($(".botText span")[$(".botText").length-1].innerHTML);
+        })
+        function insertResponse(response_text) {
+          console.log($(".botText span")[$(".botText").length-1].innerHTML);
+          var userResponse=$(".botText span")[$(".botText").length-1].innerHTML;
+          
+          $.get("/star", { star_response: userResponse }).done(function(data) {
+            $("#star_count").append("+1");
+            //document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+          });
+
+        }
+
+
+      </script>
+    </div>
+  </body>
+</html>
