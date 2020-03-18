@@ -29,7 +29,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem.snowball import SnowballStemmer
 
 import sys
-sys.path.insert(1, r'C:\Users\pmarathe\Documents\Healthfirst\Project\AutoQA\SalesforceDataSync')
+sys.path.insert(1, r'C:\Users\pmarathe\Documents\HF\Project\AutoQA\SalesforceDataSync')
 from commonUtil.APIClient import APIHelperClass
 from commonUtil.dbHelper import DBHelperClass
 
